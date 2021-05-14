@@ -3,11 +3,16 @@ package com.prueba.blockchain.pruebablockchain.service;
 import co.nstant.in.cbor.CborBuilder;
 import co.nstant.in.cbor.CborEncoder;
 import co.nstant.in.cbor.CborException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.google.protobuf.ByteString;
 import com.prueba.blockchain.pruebablockchain.consumers.sawtooth.SawtoothConsumer;
+import com.prueba.blockchain.pruebablockchain.model.AuthorizationDTO;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,18 +31,18 @@ import sawtooth.sdk.signing.Secp256k1Context;
 import sawtooth.sdk.signing.Signer;
 
 @Service
-public class IntegerKeyService implements ITransactionService {
+public class Tp1Service implements ITransactionService {
 
-  private static final String NAME = "jsae";
+  private static final String AUTHORIZATION_ID = "123";
 
   private final SawtoothConsumer sawtoothConsumer;
 
-  public IntegerKeyService(SawtoothConsumer sawtoothConsumer) {
+  public Tp1Service(SawtoothConsumer sawtoothConsumer) {
     this.sawtoothConsumer = sawtoothConsumer;
   }
 
   @Override
-  public void createTransaction() throws NoSuchAlgorithmException {
+  public void createTransaction() throws NoSuchAlgorithmException, IOException {
     // Creating a Private Key and Signer
     Secp256k1Context context = new Secp256k1Context();
     PrivateKey privateKey = context.newRandomPrivateKey();
@@ -48,15 +53,28 @@ public class IntegerKeyService implements ITransactionService {
     try {
       new CborEncoder(payload).encode(new CborBuilder()
           .addMap()
-          .put("Verb", "set")
-          .put("Name", NAME)
-          .put("Value", 31)
+          .put("authorizationId", AUTHORIZATION_ID)
+          .put("doctorSign", "Dogtor")
+          .put("description", "Desde Java")
           .end()
           .build());
     } catch (CborException e) {
       e.printStackTrace();
     }
     byte[] payloadBytes = payload.toByteArray();
+
+    /*AuthorizationDTO authorizationDTO = AuthorizationDTO.builder()
+        .authorizationId("30725837")
+        .doctorSign("Pepito Perez")
+        .description("Esta es una autorización creada desde Java")
+        .build();
+
+    ByteArrayOutputStream payload = new ByteArrayOutputStream();
+    ObjectOutputStream out = new ObjectOutputStream(payload);
+    out.writeObject(authorizationDTO);
+    out.flush();
+
+    byte[] payloadBytes = payload.toByteArray();*/
 
     // Building the Transaction
 
@@ -65,18 +83,21 @@ public class IntegerKeyService implements ITransactionService {
     // * Tiene 70 caracteres de longitud.
     // * Los 6 primeros caracteres son los 6 primeros caracteres del hash de "intkey".
     // * Los 64 restantes por los últimos 64 caracteres del hash de "Name" (El nombre de la entrada).
-    String input1 = Hashing.sha512().hashString("intkey", StandardCharsets.UTF_8).toString();
-    String input2 = Hashing.sha512().hashString(NAME, StandardCharsets.UTF_8).toString();
+    String input1 = Hashing.sha512().hashString("tp1", StandardCharsets.UTF_8).toString();
+    String input2 = Hashing.sha512().hashString(AUTHORIZATION_ID, StandardCharsets.UTF_8).toString();
     String input = input1.substring(0, 6) + input2.substring(input2.length() - 64);
 
     // 2. Create the Transaction Header
     TransactionHeader header = TransactionHeader.newBuilder()
         .setSignerPublicKey(signer.getPublicKey().hex())
-        .setFamilyName("intkey")
+        .setFamilyName("tp1")
         .setFamilyVersion("1.0")
         .addInputs(input)
         .addOutputs(input)
+
         .setPayloadSha512(hash(payload))
+        //.setPayloadSha512Bytes(hash(payload))
+
         .setBatcherPublicKey(signer.getPublicKey().hex())
         .setNonce(UUID.randomUUID().toString())
         .build();
@@ -128,6 +149,9 @@ public class IntegerKeyService implements ITransactionService {
     MessageDigest digest = MessageDigest.getInstance("SHA-512");
     digest.reset();
     digest.update(input.toByteArray());
+
     return BaseEncoding.base16().lowerCase().encode(digest.digest());
+    // String hash = BaseEncoding.base16().lowerCase().encode(digest.digest());
+    // return ByteString.copyFrom(hash, StandardCharsets.UTF_8);
   }
 }

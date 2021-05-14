@@ -28,5 +28,9 @@ docker-compose -f sawtooth-default.yaml up
 3) Crear una transacción ejecutando desde Postman: 
 
 ```bash
-POST http://localhost:8080
+# Familia intkey
+POST http://localhost:8080/intkey
+
+# Familia tp1
+POST http://localhost:8080/tp1
 ```
