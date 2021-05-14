@@ -1,18 +1,18 @@
-package com.prueba.blockchain.pruebablockchain.consumers.validator;
+package com.prueba.blockchain.pruebablockchain.consumers.sawtooth;
 
-import com.prueba.blockchain.pruebablockchain.configuration.ValidatorFeignConfiguration;
+import com.prueba.blockchain.pruebablockchain.configuration.SawtoothFeignConfiguration;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ValidatorConsumer {
+public class SawtoothConsumer {
 
-  private final ValidatorFeignConfiguration validatorFeignConfiguration;
+  private final SawtoothFeignConfiguration sawtoothFeignConfiguration;
 
-  public ValidatorConsumer(ValidatorFeignConfiguration validatorFeignConfiguration) {
-    this.validatorFeignConfiguration = validatorFeignConfiguration;
+  public SawtoothConsumer(SawtoothFeignConfiguration sawtoothFeignConfiguration) {
+    this.sawtoothFeignConfiguration = sawtoothFeignConfiguration;
   }
 
   public void postTransaction(byte[] batchListBytes) {
-    validatorFeignConfiguration.getValidatorClient().postBatchList(batchListBytes);
+    sawtoothFeignConfiguration.getSawtoothClient().postBatchList(batchListBytes);
   }
 }

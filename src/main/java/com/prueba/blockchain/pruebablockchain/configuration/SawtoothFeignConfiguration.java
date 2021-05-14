@@ -1,6 +1,6 @@
 package com.prueba.blockchain.pruebablockchain.configuration;
 
-import com.prueba.blockchain.pruebablockchain.consumers.validator.IValidatorClient;
+import com.prueba.blockchain.pruebablockchain.consumers.sawtooth.ISawtoothClient;
 import feign.Contract;
 import feign.Feign;
 import feign.codec.Decoder;
@@ -13,21 +13,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Import(FeignClientsConfiguration.class)
-public class ValidatorFeignConfiguration {
+public class SawtoothFeignConfiguration {
 
   @Getter
-  private IValidatorClient validatorClient;
+  private ISawtoothClient sawtoothClient;
 
-  public ValidatorFeignConfiguration(
+  public SawtoothFeignConfiguration(
       Decoder decoder,
       Encoder encoder,
       Contract contract,
-      @Value("${validator.url}") String validatorUrl) {
-    this.validatorClient =
+      @Value("${sawtooth.api.url}") String sawtoothApiUrl) {
+    this.sawtoothClient =
         Feign.builder()
             .encoder(encoder)
             .decoder(decoder)
             .contract(contract)
-            .target(IValidatorClient.class, validatorUrl);
+            .target(ISawtoothClient.class, sawtoothApiUrl);
   }
 }
