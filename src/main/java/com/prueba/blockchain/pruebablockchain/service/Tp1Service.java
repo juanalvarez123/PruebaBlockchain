@@ -3,16 +3,12 @@ package com.prueba.blockchain.pruebablockchain.service;
 import co.nstant.in.cbor.CborBuilder;
 import co.nstant.in.cbor.CborEncoder;
 import co.nstant.in.cbor.CborException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.google.protobuf.ByteString;
 import com.prueba.blockchain.pruebablockchain.consumers.sawtooth.SawtoothConsumer;
-import com.prueba.blockchain.pruebablockchain.model.AuthorizationDTO;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -63,7 +59,8 @@ public class Tp1Service implements ITransactionService {
     }
     byte[] payloadBytes = payload.toByteArray();
 
-    /*AuthorizationDTO authorizationDTO = AuthorizationDTO.builder()
+    /* TODO: Pendiente intentar de esta forma
+    AuthorizationDTO authorizationDTO = AuthorizationDTO.builder()
         .authorizationId("30725837")
         .doctorSign("Pepito Perez")
         .description("Esta es una autorización creada desde Java")
@@ -94,10 +91,7 @@ public class Tp1Service implements ITransactionService {
         .setFamilyVersion("1.0")
         .addInputs(input)
         .addOutputs(input)
-
         .setPayloadSha512(hash(payload))
-        //.setPayloadSha512Bytes(hash(payload))
-
         .setBatcherPublicKey(signer.getPublicKey().hex())
         .setNonce(UUID.randomUUID().toString())
         .build();
@@ -107,6 +101,10 @@ public class Tp1Service implements ITransactionService {
 
     Transaction transaction = Transaction.newBuilder()
         .setHeader(header.toByteString())
+        /**
+         * TODO: El payload debe ser enviado como Buffer o Uint8Array.
+         * Lastimosamente el SDK de Java no lo permite
+        */
         .setPayload(ByteString.copyFrom(payloadBytes))
         .setHeaderSignature(signature)
         .build();
@@ -151,7 +149,5 @@ public class Tp1Service implements ITransactionService {
     digest.update(input.toByteArray());
 
     return BaseEncoding.base16().lowerCase().encode(digest.digest());
-    // String hash = BaseEncoding.base16().lowerCase().encode(digest.digest());
-    // return ByteString.copyFrom(hash, StandardCharsets.UTF_8);
   }
 }
