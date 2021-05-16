@@ -1,8 +1,12 @@
-# Prueba Blockchain
+# Microservicio Spring Boot usando el API de Sawtooth 
 
 ## Descripción
 
-Contiene un ejemplo de uso del SDK de Hyperledger Sawtooth para Java. La implementación inicial es con la famiia `IntegerKey`.
+En este ejemplo podrás desplegar:
+* Un blockchain usando el framework de **Hyperledger Sawtooth** junto Docker y docker-compose.
+* Un microservicio construido con Java y Spring Boot que usa el SDK de **Hyperledger Sawtooth** paracomunicarse con el API de Sawtooth.
+  
+En elmicroservicio, la implementación inicial es con la famiia `IntegerKey` y aún está pendiente por mejorar la implementación con la familia `tp1`.
 
 ## Links
 
@@ -12,25 +16,27 @@ Contiene un ejemplo de uso del SDK de Hyperledger Sawtooth para Java. La impleme
 
 ## Instrucciones
 
-1) Levantar Hyperledger Sawtooth con Docker:
+1) Desplegar **Hyperledger Sawtooth** con Docker:
 
 ```bash
 cd docker-compose
 docker-compose -f sawtooth-default.yaml up
 ```
 
-2) Correr este proyecto:
+**Opcional:** Para desplegar **Hyperledger Sawtooth** que contiene la familia `tp1` hay que hacerlo con [este proyecto](https://github.com/juanalvarez123/sawtooth-kafka-mongo-hello).
+
+2) Correr el microservicio:
 
 ```bash
-./gradlew bootRun --debug-jvm
+./gradlew bootRun
 ```
 
-3) Crear una transacción ejecutando desde Postman: 
+3) Crear una transacción (Ejecutando desde Postman): 
 
 ```bash
-# Familia intkey
+# Familia IntegerKey
 POST http://localhost:8080/intkey
 
-# Familia tp1
+# Familia tp1 (Por mejorar)
 POST http://localhost:8080/tp1
 ```
