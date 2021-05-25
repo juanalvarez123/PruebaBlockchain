@@ -4,7 +4,7 @@
 
 En este ejemplo podrás desplegar:
 * Un blockchain usando el framework de **Hyperledger Sawtooth** junto Docker y docker-compose.
-* Un microservicio construido con Java y Spring Boot que usa el SDK de **Hyperledger Sawtooth** paracomunicarse con el API de Sawtooth.
+* Un microservicio construido con Java y Spring Boot que usa el SDK de **Hyperledger Sawtooth** para comunicarse con el API de Sawtooth.
   
 En elmicroservicio, la implementación inicial es con la famiia `IntegerKey` y aún está pendiente por mejorar la implementación con la familia `tp1`.
 
